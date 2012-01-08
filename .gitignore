@@ -1,0 +1,8 @@
+js/jquery*
+js/raphael*
+meta/
+node_modules/
+lib/
+trash/
+resources/*.svg.bk
+vimsession
