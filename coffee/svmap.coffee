@@ -9,13 +9,26 @@ class SVMap
     @paper  = Raphael @div_id, 900, 470  
     @paths  = []
     @_cache = {}
-    @_initMap()
+    @renderPais()
 
   # dibuja un departamento
   renderDepartamento: (code)->
     @_cache.currentDept.remove() if @_cache.currentDept?
     @_cache[ 'currentDept' ] = @paper.set()
     departamento = @data.pais.departamentos[code]
+
+    # shadow
+    for key, municipio of departamento.municipios
+      @_cache.currentDept.push @paper.path(municipio.path)
+                                     .attr( fill: '#C9CBDC', stroke: 'none' )
+                                     .translate 553, 53
+
+    # background
+    for key, municipio of departamento.municipios
+      @_cache.currentDept.push @paper.path(municipio.path)
+                                     .attr( fill:  '#8C8FAB', stroke: 'none' )
+                                     .translate 551, 51
+
     for key, municipio of departamento.municipios
       if key.match /lago/
         attr =
@@ -28,11 +41,11 @@ class SVMap
 
       @_cache.currentDept.push @paper.path(municipio.path)
                                      .attr(attr)
-                                     .translate 550, 75
+                                     .translate 550, 50
 
 
 
-  _initMap: ->
+  renderPais: ->
     # dibujar sombra
     @paper.path(@data.pais.shadow)
           .attr
@@ -56,8 +69,8 @@ class SVMap
       # Labels
       matrix = Raphael.matrix.apply null, departamento.lblTransform
       lbl    = @paper.text( 0, 0, departamento.lbl)
-                     .attr( fill: '#5F6495' )
                      .transform( matrix.toTransformString() )
+                     .attr( fill: '#5F6495', 'font-size': 7)
 
       # agregar raphael object a `paths` array
       @paths.push el: dept, lbl: lbl, key: key

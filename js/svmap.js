@@ -9,18 +9,34 @@
       this.paper = Raphael(this.div_id, 900, 470);
       this.paths = [];
       this._cache = {};
-      this._initMap();
+      this.renderPais();
     }
 
     SVMap.prototype.renderDepartamento = function(code) {
-      var attr, departamento, key, municipio, _ref, _results;
+      var attr, departamento, key, municipio, _ref, _ref2, _ref3, _results;
       if (this._cache.currentDept != null) this._cache.currentDept.remove();
       this._cache['currentDept'] = this.paper.set();
       departamento = this.data.pais.departamentos[code];
       _ref = departamento.municipios;
-      _results = [];
       for (key in _ref) {
         municipio = _ref[key];
+        this._cache.currentDept.push(this.paper.path(municipio.path).attr({
+          fill: '#C9CBDC',
+          stroke: 'none'
+        }).translate(553, 53));
+      }
+      _ref2 = departamento.municipios;
+      for (key in _ref2) {
+        municipio = _ref2[key];
+        this._cache.currentDept.push(this.paper.path(municipio.path).attr({
+          fill: '#8C8FAB',
+          stroke: 'none'
+        }).translate(551, 51));
+      }
+      _ref3 = departamento.municipios;
+      _results = [];
+      for (key in _ref3) {
+        municipio = _ref3[key];
         if (key.match(/lago/)) {
           attr = {
             fill: '#58A9F4',
@@ -32,12 +48,12 @@
             fill: '#CFD2F1'
           };
         }
-        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(550, 75)));
+        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(550, 50)));
       }
       return _results;
     };
 
-    SVMap.prototype._initMap = function() {
+    SVMap.prototype.renderPais = function() {
       var departamento, dept, key, lbl, matrix, _ref, _results;
       this.paper.path(this.data.pais.shadow).attr({
         fill: '#C9CBDC',
@@ -56,9 +72,10 @@
           stroke: '#8C8FAB'
         });
         matrix = Raphael.matrix.apply(null, departamento.lblTransform);
-        lbl = this.paper.text(0, 0, departamento.lbl).attr({
-          fill: '#5F6495'
-        }).transform(matrix.toTransformString());
+        lbl = this.paper.text(0, 0, departamento.lbl).transform(matrix.toTransformString()).attr({
+          fill: '#5F6495',
+          'font-size': 7
+        });
         _results.push(this.paths.push({
           el: dept,
           lbl: lbl,
