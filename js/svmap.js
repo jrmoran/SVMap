@@ -44,7 +44,7 @@
           };
         } else {
           attr = {
-            stroke: '#8C8FAB',
+            stroke: '#8489BF',
             fill: '#CFD2F1'
           };
         }
@@ -69,12 +69,12 @@
         departamento = _ref[key];
         dept = this.paper.path(departamento.path).attr({
           fill: '#CFD2F1',
-          stroke: '#8C8FAB'
+          stroke: '#8489BF'
         });
         matrix = Raphael.matrix.apply(null, departamento.lblTransform);
-        lbl = this.paper.text(0, 0, departamento.lbl).transform(matrix.toTransformString()).attr({
-          fill: '#5F6495',
-          'font-size': 7
+        lbl = this.paper.text(0, 0, key.replace('d', '')).transform(matrix.toTransformString()).attr({
+          fill: '#7A80BE',
+          'font-size': 10
         });
         _results.push(this.paths.push({
           el: dept,

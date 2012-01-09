@@ -12,6 +12,7 @@ class SVMap
     @renderPais()
 
   # dibuja un departamento
+  # TODO add events
   renderDepartamento: (code)->
     @_cache.currentDept.remove() if @_cache.currentDept?
     @_cache[ 'currentDept' ] = @paper.set()
@@ -36,7 +37,7 @@ class SVMap
           stroke: '#3684CC'
       else
         attr =
-          stroke: '#8C8FAB'
+          stroke: '#8489BF'
           fill  : '#CFD2F1'
 
       @_cache.currentDept.push @paper.path(municipio.path)
@@ -64,13 +65,13 @@ class SVMap
       dept = @paper.path(departamento.path)
                    .attr
                      fill  : '#CFD2F1'
-                     stroke: '#8C8FAB'
+                     stroke: '#8489BF'
 
       # Labels
       matrix = Raphael.matrix.apply null, departamento.lblTransform
-      lbl    = @paper.text( 0, 0, departamento.lbl)
+      lbl    = @paper.text( 0, 0, key.replace 'd', '')
                      .transform( matrix.toTransformString() )
-                     .attr( fill: '#5F6495', 'font-size': 7)
+                     .attr( fill: '#7A80BE', 'font-size': 10)
 
       # agregar raphael object a `paths` array
       @paths.push el: dept, lbl: lbl, key: key
