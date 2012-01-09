@@ -6,13 +6,36 @@
     function SVMap(div_id, data) {
       this.div_id = div_id;
       this.data = data;
+      this.paper = Raphael(this.div_id, 900, 470);
+      this.paths = [];
       this._initMap();
     }
 
+    SVMap.prototype.renderDepartamento = function(code) {
+      var attr, departamento, key, municipio, _ref, _results;
+      departamento = this.data.pais.departamentos[code];
+      _ref = departamento.municipios;
+      _results = [];
+      for (key in _ref) {
+        municipio = _ref[key];
+        if (key.match(/lago/)) {
+          attr = {
+            fill: '#58A9F4',
+            stroke: '#3684CC'
+          };
+        } else {
+          attr = {
+            stroke: '#8C8FAB',
+            fill: '#CFD2F1'
+          };
+        }
+        _results.push(this.paper.path(municipio.path).attr(attr).translate(550, 75));
+      }
+      return _results;
+    };
+
     SVMap.prototype._initMap = function() {
       var departamento, dept, key, lbl, matrix, _ref, _results;
-      this.paper = Raphael(this.div_id, 900, 470);
-      this.paths = [];
       this.paper.path(this.data.pais.shadow).attr({
         fill: '#C9CBDC',
         stroke: 'none'

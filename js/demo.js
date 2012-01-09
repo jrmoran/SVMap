@@ -7,10 +7,11 @@
 
   SVMap('mapa', function(mapa) {
     mapa.on('click', function(code, el) {
-      return updateStatus({
+      updateStatus({
         event: 'click',
         code: code
       });
+      return mapa.renderDepartamento(code);
     });
     mapa.on('dblclick', function(code, el) {
       return updateStatus({

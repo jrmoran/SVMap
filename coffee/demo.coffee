@@ -5,6 +5,7 @@ updateStatus = (o)->
 SVMap 'mapa', (mapa)->
   mapa.on 'click',     (code, el)->
     updateStatus event: 'click', code: code
+    mapa.renderDepartamento code
 
   mapa.on 'dblclick',  (code, el)->
     updateStatus event: 'dblclick', code: code

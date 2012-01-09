@@ -6,12 +6,32 @@
 #
 class SVMap
   constructor: (@div_id, @data)->
-    @_initMap()
-
-  _initMap: ->
     @paper = Raphael @div_id, 900, 470  
     @paths = []
 
+    # @renderDepartamento 'd06'
+    @_initMap()
+
+  # dibuja un departamento
+  renderDepartamento: (code)->
+    #TODO remove current rendered departamento 
+    departamento = @data.pais.departamentos[code]
+    for key, municipio of departamento.municipios
+      if key.match /lago/
+        attr =
+          fill  : '#58A9F4'
+          stroke: '#3684CC'
+      else
+        attr =
+          stroke: '#8C8FAB'
+          fill  : '#CFD2F1'
+      @paper.path(municipio.path)
+            .attr(attr)
+            .translate 550, 75
+
+
+
+  _initMap: ->
     # dibujar sombra
     @paper.path(@data.pais.shadow)
           .attr
