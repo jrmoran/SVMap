@@ -21,5 +21,5 @@ exportados a formato *svg* siguiendo estos settings:
 Ejecuta el comando `cake` para listar tareas disponibles.
 
 El directorio `tools` contiene scripts para diversas tareas. Estos deben
-ser ejecutados desde el directorio rais del projecto, o preferiblemente
+ser ejecutados desde el directorio raiz del projecto, o preferiblemente
 usando el comando `cake`.
