@@ -73,21 +73,25 @@ jsdom.env pais, (err, win)->
       lbl          : text.textContent
       lblTransform : extractTransform text
       path         : extractPath (g.getElementsByTagName 'path')[0]
+      municipios   : {}
 
-  
-  saveData output
+  # ## Process departamentos.svg
 
-  #TODO: process departamentos.svg
-  # # find groups
-  # groups = win.document.getElementsByTagName 'g'
-  # for g in groups
-  #   # use group's `id` as keys
-  #   deptKey = g.getAttribute 'id' || nextId()
-  #   output[ deptKey ] = {}
+  #
+  jsdom.env depts, (err, win)->
 
-  #   for node in g.childNodes
-  #     path = extractPath node
+    # look for groups sharing a key with departamentos
+    for key of output.pais.departamentos
+      departamento = win.document.getElementById key
 
-  #     if path
-  #       muniKey = extractId node
-  #       output[ deptKey ][ muniKey ] = path
+      # iterate over all `path` and `poly` elements inside the departamento
+      # group.
+      for el in departamento.childNodes
+        #skip text nodes
+        continue if el.nodeName is '#text'
+
+        # add municipio to its respective departamento 
+        output.pais.departamentos[ key ].municipios[ extractId el ] =
+          path = extractPath el
+
+    saveData output
