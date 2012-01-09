@@ -92,6 +92,6 @@ jsdom.env pais, (err, win)->
 
         # add municipio to its respective departamento 
         output.pais.departamentos[ key ].municipios[ extractId el ] =
-          path = extractPath el
+          path: extractPath el
 
     saveData output
