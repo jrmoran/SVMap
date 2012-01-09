@@ -6,15 +6,15 @@
 #
 class SVMap
   constructor: (@div_id, @data)->
-    @paper = Raphael @div_id, 900, 470  
-    @paths = []
-
-    # @renderDepartamento 'd06'
+    @paper  = Raphael @div_id, 900, 470  
+    @paths  = []
+    @_cache = {}
     @_initMap()
 
   # dibuja un departamento
   renderDepartamento: (code)->
-    #TODO remove current rendered departamento 
+    @_cache.currentDept.remove() if @_cache.currentDept?
+    @_cache[ 'currentDept' ] = @paper.set()
     departamento = @data.pais.departamentos[code]
     for key, municipio of departamento.municipios
       if key.match /lago/
@@ -25,9 +25,10 @@ class SVMap
         attr =
           stroke: '#8C8FAB'
           fill  : '#CFD2F1'
-      @paper.path(municipio.path)
-            .attr(attr)
-            .translate 550, 75
+
+      @_cache.currentDept.push @paper.path(municipio.path)
+                                     .attr(attr)
+                                     .translate 550, 75
 
 
 

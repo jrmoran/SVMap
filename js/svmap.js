@@ -8,11 +8,14 @@
       this.data = data;
       this.paper = Raphael(this.div_id, 900, 470);
       this.paths = [];
+      this._cache = {};
       this._initMap();
     }
 
     SVMap.prototype.renderDepartamento = function(code) {
       var attr, departamento, key, municipio, _ref, _results;
+      if (this._cache.currentDept != null) this._cache.currentDept.remove();
+      this._cache['currentDept'] = this.paper.set();
       departamento = this.data.pais.departamentos[code];
       _ref = departamento.municipios;
       _results = [];
@@ -29,7 +32,7 @@
             fill: '#CFD2F1'
           };
         }
-        _results.push(this.paper.path(municipio.path).attr(attr).translate(550, 75));
+        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(550, 75)));
       }
       return _results;
     };
