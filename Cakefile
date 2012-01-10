@@ -13,3 +13,6 @@ task 'watch', 'observa los archivos coffee y los compila', ->
   watch = exec 'coffee -o js/ -cw coffee/'
   watch.stdout.on 'data', (data)-> process.stdout.write data
 
+task 'docs', 'genera documentacion desde los archivos coffee', ->
+  exec 'docco tools/*.coffee coffee/*.coffee', exerr
+

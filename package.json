@@ -1,0 +1,9 @@
+{
+  "name"        : "SVMap",
+  "version"     : "0.1.0",
+  "dependencies": {
+                    "jsdom"        : "0.2.10",
+                    "docco"        : "0.3.0",
+                    "coffee-script": "1.2.0"
+                  }
+}
