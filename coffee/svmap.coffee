@@ -6,7 +6,7 @@
 #
 class SVMap
   constructor: (@div_id, @data)->
-    @paper  = Raphael @div_id, 900, 470  
+    @paper  = Raphael @div_id, 780, 470
     @paths  = []
     @_cache = {}
     @renderPais()
@@ -97,11 +97,11 @@ class SVMap
     throw "Evento #{event} no soportado" unless @supportsEvent event
     for path in @paths
       {el, lbl, key} = path
-      el[ event ] do (fun, key, el)-> (-> fun key, el) 
+      el[ event ] do (fun, key, el)-> (-> fun key, el)
 
       # agregar evento al label si existe
       if lbl
-        lbl[ event ] do (fun, key, el)-> (-> fun key, el) 
+        lbl[ event ] do (fun, key, el)-> (-> fun key, el)
 
   hidePais: (f)->
     @_cache[ prop ].hide() for prop in ['departamentos', 'shadow', 'labels' ]
@@ -119,6 +119,6 @@ class SVMap
 # Wrapper, crea el mapa y cuando el archivo `data/data.json` ha sido
 # cargado ejecuta la funcion `fun`
 window.SVMap = (div_id, fun)->
-  $.getJSON 'svmap-paths.json', (data)-> 
+  $.getJSON 'svmap-paths.json', (data)->
     mapa = new SVMap div_id, data
     fun mapa
