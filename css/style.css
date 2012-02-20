@@ -36,6 +36,12 @@ h1{
    font-weight: bold;
  }
 
+ .nav{
+  float: left;
+  width: 900px;
+  margin: 18px auto;
+ }
+
  #footer{
   margin: 18px auto;
   float: left;

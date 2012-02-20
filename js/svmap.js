@@ -23,7 +23,7 @@
         this._cache.currentDept.push(this.paper.path(municipio.path).attr({
           fill: '#C9CBDC',
           stroke: 'none'
-        }).translate(553, 53));
+        }).translate(-3, 53));
       }
       _ref2 = departamento.municipios;
       for (key in _ref2) {
@@ -31,7 +31,7 @@
         this._cache.currentDept.push(this.paper.path(municipio.path).attr({
           fill: '#8C8FAB',
           stroke: 'none'
-        }).translate(551, 51));
+        }).translate(-1, 51));
       }
       _ref3 = departamento.municipios;
       _results = [];
@@ -48,18 +48,20 @@
             fill: '#CFD2F1'
           };
         }
-        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(550, 50)));
+        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(-3, 50)));
       }
       return _results;
     };
 
     SVMap.prototype.renderPais = function() {
       var departamento, dept, key, lbl, matrix, _ref, _results;
-      this.paper.path(this.data.pais.shadow).attr({
+      this._cache['labels'] = this.paper.set();
+      this._cache['departamentos'] = this.paper.set();
+      this._cache['shadow'] = this.paper.path(this.data.pais.shadow).attr({
         fill: '#C9CBDC',
         stroke: 'none'
       });
-      this.paper.path(this.data.pais.background).attr({
+      this._cache['background'] = this.paper.path(this.data.pais.background).attr({
         fill: '#8C8FAB',
         stroke: 'none'
       });
@@ -76,6 +78,8 @@
           fill: '#7A80BE',
           'font-size': 10
         });
+        this._cache.labels.push(lbl);
+        this._cache.departamentos.push(dept);
         _results.push(this.paths.push({
           el: dept,
           lbl: lbl,
@@ -123,6 +127,44 @@
         }
       }
       return _results;
+    };
+
+    SVMap.prototype.hidePais = function(f) {
+      var prop, _i, _len, _ref;
+      _ref = ['departamentos', 'shadow', 'labels'];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        prop = _ref[_i];
+        this._cache[prop].hide();
+      }
+      return this._cache.background.animate({
+        transform: 'T-780,0'
+      }, 500, function() {
+        return typeof f === "function" ? f() : void 0;
+      });
+    };
+
+    SVMap.prototype.showPais = function() {
+      var _this = this;
+      this._cache.currentDept.hide();
+      return this._cache.background.animate({
+        transform: 'T0,0'
+      }, 500, function() {
+        var prop, _i, _len, _ref, _results;
+        _ref = ['departamentos', 'shadow', 'labels'];
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          prop = _ref[_i];
+          _results.push(_this._cache[prop].show());
+        }
+        return _results;
+      });
+    };
+
+    SVMap.prototype.showDepartamento = function(code) {
+      var _this = this;
+      return this.hidePais(function() {
+        return _this.renderDepartamento(code);
+      });
     };
 
     return SVMap;

@@ -1,3 +1,4 @@
+.cake_task_cache
 js/jquery*
 js/raphael*
 meta/

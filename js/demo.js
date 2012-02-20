@@ -6,11 +6,19 @@
   };
 
   SVMap('mapa', function(mapa) {
+    var $back;
+    window.mapa = mapa;
+    $back = $('#svmap-back-btn');
+    $back.hide().on('click', function() {
+      return mapa.showPais();
+    });
     mapa.on('click', function(code, el) {
-      return updateStatus({
+      updateStatus({
         event: 'click',
         code: code
       });
+      mapa.showDepartamento(code);
+      return $back.show();
     });
     mapa.on('dblclick', function(code, el) {
       return updateStatus({

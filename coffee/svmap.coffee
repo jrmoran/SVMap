@@ -22,13 +22,13 @@ class SVMap
     for key, municipio of departamento.municipios
       @_cache.currentDept.push @paper.path(municipio.path)
                                      .attr( fill: '#C9CBDC', stroke: 'none' )
-                                     .translate 553, 53
+                                     .translate -3, 53
 
     # background
     for key, municipio of departamento.municipios
       @_cache.currentDept.push @paper.path(municipio.path)
                                      .attr( fill:  '#8C8FAB', stroke: 'none' )
-                                     .translate 551, 51
+                                     .translate -1, 51
 
     for key, municipio of departamento.municipios
       if key.match /lago/
@@ -42,22 +42,25 @@ class SVMap
 
       @_cache.currentDept.push @paper.path(municipio.path)
                                      .attr(attr)
-                                     .translate 550, 50
-
-
+                                     .translate -3, 50
 
   renderPais: ->
+
+    # preparar cache
+    @_cache[ 'labels' ]        = @paper.set()
+    @_cache[ 'departamentos' ] = @paper.set()
+
     # dibujar sombra
-    @paper.path(@data.pais.shadow)
-          .attr
-            fill  : '#C9CBDC'
-            stroke: 'none'
+    @_cache[ 'shadow' ] = @paper.path(@data.pais.shadow)
+                            .attr
+                              fill  : '#C9CBDC'
+                              stroke: 'none'
 
     # dibujar background
-    @paper.path(@data.pais.background)
-          .attr
-            fill  : '#8C8FAB'
-            stroke: 'none'
+    @_cache[ 'background' ] = @paper.path(@data.pais.background)
+                                .attr
+                                  fill  : '#8C8FAB'
+                                  stroke: 'none'
 
     # dibujar departamentos
     for key, departamento of @data.pais.departamentos
@@ -73,6 +76,9 @@ class SVMap
                      .transform( matrix.toTransformString() )
                      .attr( fill: '#7A80BE', 'font-size': 10)
 
+      @_cache.labels.push lbl
+      @_cache.departamentos.push dept
+
       # agregar raphael object a `paths` array
       @paths.push el: dept, lbl: lbl, key: key
 
@@ -85,6 +91,8 @@ class SVMap
 
   # adentro de un loop mandar la funcion `fun` y la string `key` al
   # mismo nivel de scope que el event handler
+  # TODO: use chache to append events
+  # TODO: add extra events to signal what's currently being displayed
   on: (event, fun)->
     throw "Evento #{event} no soportado" unless @supportsEvent event
     for path in @paths
@@ -94,6 +102,19 @@ class SVMap
       # agregar evento al label si existe
       if lbl
         lbl[ event ] do (fun, key, el)-> (-> fun key, el) 
+
+  hidePais: (f)->
+    @_cache[ prop ].hide() for prop in ['departamentos', 'shadow', 'labels' ]
+    @_cache.background.animate transform: 'T-780,0' ,500, -> f?()
+
+  showPais: ->
+    @_cache.currentDept.hide()
+    @_cache.background.animate transform: 'T0,0' , 500, =>
+      @_cache[ prop ].show() for prop in ['departamentos', 'shadow', 'labels' ]
+
+  showDepartamento: (code)->
+    @hidePais => @renderDepartamento code
+
 
 # Wrapper, crea el mapa y cuando el archivo `data/data.json` ha sido
 # cargado ejecuta la funcion `fun`

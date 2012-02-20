@@ -3,9 +3,15 @@ updateStatus = (o)->
                      <em>code: \b</em> #{o.code}"
 
 SVMap 'mapa', (mapa)->
+  window.mapa = mapa    # exposing the map to the global scope
+
+  $back = $('#svmap-back-btn') 
+  $back.hide().on 'click', -> mapa.showPais()
+
   mapa.on 'click',     (code, el)->
     updateStatus event: 'click', code: code
-    #mapa.renderDepartamento code
+    mapa.showDepartamento code
+    $back.show()
 
   mapa.on 'dblclick',  (code, el)->
     updateStatus event: 'dblclick', code: code
@@ -17,5 +23,7 @@ SVMap 'mapa', (mapa)->
   mapa.on 'mouseout',  (code, el)->
     updateStatus event: 'mouseout', code: code
     el.attr fill  : '#CFD2F1'
+
+
 
 
