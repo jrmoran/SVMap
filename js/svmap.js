@@ -172,7 +172,7 @@
   })();
 
   window.SVMap = function(div_id, fun) {
-    return $.getJSON('data/data.json', function(data) {
+    return $.getJSON('data/svmap-paths.json', function(data) {
       var mapa;
       mapa = new SVMap(div_id, data);
       return fun(mapa);

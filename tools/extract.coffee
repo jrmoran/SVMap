@@ -6,7 +6,7 @@ jsdom    = require 'jsdom'
 fs       = require 'fs'
 pais     = fs.readFileSync('./resources/pais.svg').toString()
 depts    = fs.readFileSync('./resources/departamentos.svg').toString()
-out_file = './data/data.json'
+out_file = './data/svmap-paths.json'
 
 ## helpers
 #

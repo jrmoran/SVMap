@@ -119,6 +119,6 @@ class SVMap
 # Wrapper, crea el mapa y cuando el archivo `data/data.json` ha sido
 # cargado ejecuta la funcion `fun`
 window.SVMap = (div_id, fun)->
-  $.getJSON 'data/data.json', (data)-> 
+  $.getJSON 'data/svmap-paths.json', (data)-> 
     mapa = new SVMap div_id, data
     fun mapa
