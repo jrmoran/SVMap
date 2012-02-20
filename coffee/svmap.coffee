@@ -69,7 +69,7 @@ class SVMap
 
       # Labels
       matrix = Raphael.matrix.apply null, departamento.lblTransform
-      lbl    = @paper.text( 0, 0, key.replace 'd', '')
+      lbl    = @paper.text( 0, 0, departamento.lbl)
                      .transform( matrix.toTransformString() )
                      .attr( fill: '#7A80BE', 'font-size': 10)
 

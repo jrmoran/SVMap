@@ -72,7 +72,7 @@
           stroke: '#8489BF'
         });
         matrix = Raphael.matrix.apply(null, departamento.lblTransform);
-        lbl = this.paper.text(0, 0, key.replace('d', '')).transform(matrix.toTransformString()).attr({
+        lbl = this.paper.text(0, 0, departamento.lbl).transform(matrix.toTransformString()).attr({
           fill: '#7A80BE',
           'font-size': 10
         });
