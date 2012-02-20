@@ -10,7 +10,7 @@ task 'extract', 'Extrae datos desde los archivos SVG a formato JSON', ->
   exec 'coffee ./tools/extract.coffee', exerr
 
 task 'watch', 'observa los archivos coffee y los compila', ->
-  watch = exec 'coffee -o demo/js/ -cw coffee/'
+  watch = exec 'coffee -o demo/ -cw coffee/'
   watch.stdout.on 'data', (data)-> process.stdout.write data
 
 task 'docs', 'genera documentacion desde los archivos coffee', ->

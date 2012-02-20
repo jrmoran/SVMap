@@ -6,7 +6,7 @@
     function SVMap(div_id, data) {
       this.div_id = div_id;
       this.data = data;
-      this.paper = Raphael(this.div_id, 900, 470);
+      this.paper = Raphael(this.div_id, 780, 470);
       this.paths = [];
       this._cache = {};
       this.renderPais();
@@ -48,7 +48,11 @@
             fill: '#CFD2F1'
           };
         }
-        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(-3, 50)));
+        _results.push(this._cache.currentDept.push(this.paper.path(municipio.path).attr(attr).translate(-3, 50).attr({
+          opacity: 0
+        }).animate({
+          opacity: 1
+        }, 90)));
       }
       return _results;
     };

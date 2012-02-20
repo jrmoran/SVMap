@@ -42,7 +42,9 @@ class SVMap
 
       @_cache.currentDept.push @paper.path(municipio.path)
                                      .attr(attr)
-                                     .translate -3, 50
+                                     .translate(-3, 50)
+                                     .attr(opacity: 0)
+                                     .animate( opacity: 1 , 90 )
 
   renderPais: ->
 
