@@ -142,7 +142,7 @@
       }
       return this._cache.background.animate({
         transform: 'T-780,0'
-      }, 500, function() {
+      }, 100, function() {
         return typeof f === "function" ? f() : void 0;
       });
     };
@@ -152,7 +152,7 @@
       this._cache.currentDept.hide();
       return this._cache.background.animate({
         transform: 'T0,0'
-      }, 500, function() {
+      }, 100, function() {
         var prop, _i, _len, _ref, _results;
         _ref = ['departamentos', 'shadow', 'labels'];
         _results = [];

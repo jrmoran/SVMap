@@ -107,11 +107,11 @@ class SVMap
 
   hidePais: (f)->
     @_cache[ prop ].hide() for prop in ['departamentos', 'shadow', 'labels' ]
-    @_cache.background.animate transform: 'T-780,0' ,500, -> f?()
+    @_cache.background.animate transform: 'T-780,0' , 100, -> f?()
 
   showPais: ->
     @_cache.currentDept.hide()
-    @_cache.background.animate transform: 'T0,0' , 500, =>
+    @_cache.background.animate transform: 'T0,0' , 100, =>
       @_cache[ prop ].show() for prop in ['departamentos', 'shadow', 'labels' ]
 
   showDepartamento: (code)->
