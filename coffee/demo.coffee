@@ -8,21 +8,18 @@ SVMap 'mapa', (mapa)->
   $back = $('#svmap-back-btn') 
   $back.hide().on 'click', -> mapa.showPais()
 
-  mapa.on 'click',     (code, el)->
+  mapa.on 'click',     (departamento, code)->
     updateStatus event: 'click', code: code
     mapa.showDepartamento code
     $back.show()
 
-  mapa.on 'dblclick',  (code, el)->
-    updateStatus event: 'dblclick', code: code
-
-  mapa.on 'mouseover', (code, el)->
+  mapa.on 'mouseover', (departamento, code)->
     updateStatus event: 'mouseover', code: code
-    el.attr fill: '#EAECFF'
+    departamento.path.attr fill: '#EAECFF'
 
-  mapa.on 'mouseout',  (code, el)->
+  mapa.on 'mouseout',  (departamento, code)->
     updateStatus event: 'mouseout', code: code
-    el.attr fill  : '#CFD2F1'
+    departamento.path.attr fill  : '#CFD2F1'
 
 
 

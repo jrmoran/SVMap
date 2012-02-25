@@ -7,16 +7,15 @@
 class SVMap
   constructor: (@div_id, @data)->
     @paper  = Raphael @div_id, 780, 470
-    @paths  = []
     @_cache = {}
     @renderPais()
 
   # dibuja un departamento
   # TODO add events
-  renderDepartamento: (code)->
+  renderDepartamento: (departamento)->
+
     @_cache.currentDept.remove() if @_cache.currentDept?
     @_cache[ 'currentDept' ] = @paper.set()
-    departamento = @data.pais.departamentos[code]
 
     # shadow
     for key, municipio of departamento.municipios
@@ -49,8 +48,7 @@ class SVMap
   renderPais: ->
 
     # preparar cache
-    @_cache[ 'labels' ]        = @paper.set()
-    @_cache[ 'departamentos' ] = @paper.set()
+    @_cache[ 'departamentos' ] = []
 
     # dibujar sombra
     @_cache[ 'shadow' ] = @paper.path(@data.pais.shadow)
@@ -78,11 +76,8 @@ class SVMap
                      .transform( matrix.toTransformString() )
                      .attr( fill: '#7A80BE', 'font-size': 10)
 
-      @_cache.labels.push lbl
-      @_cache.departamentos.push dept
-
-      # agregar raphael object a `paths` array
-      @paths.push el: dept, lbl: lbl, key: key
+      dept.code = key
+      @_cache.departamentos.push path: dept, label: lbl, code: key
 
   # regresa `true` si el evento es soportado
   supportsEvent: (event)->
@@ -91,32 +86,36 @@ class SVMap
 
     events[ event ]?
 
-  # adentro de un loop mandar la funcion `fun` y la string `key` al
-  # mismo nivel de scope que el event handler
-  # TODO: use chache to append events
-  # TODO: add extra events to signal what's currently being displayed
   on: (event, fun)->
     throw "Evento #{event} no soportado" unless @supportsEvent event
-    for path in @paths
-      {el, lbl, key} = path
-      el[ event ] do (fun, key, el)-> (-> fun key, el)
-
-      # agregar evento al label si existe
-      if lbl
-        lbl[ event ] do (fun, key, el)-> (-> fun key, el)
+    for departamento in @_cache.departamentos
+      # obtengo una function expression que ejecuta `fun` y pasa al departamento
+      # usando una funcion anonima autoejecutable, esto es necesario por
+      # que estamos asignando el handler adentro de un loop.
+      handler = do (fun, departamento) -> (-> fun departamento, departamento.code)
+      departamento.path[ event ]  handler
+      departamento.label[ event ] handler
 
   hidePais: (f)->
-    @_cache[ prop ].hide() for prop in ['departamentos', 'shadow', 'labels' ]
-    @_cache.background.animate transform: 'T-780,0' , 100, -> f?()
+    @_cache.shadow.hide()
+    for departamento in @_cache.departamentos
+      departamento.path.hide()
+      departamento.label.hide()
+    @_cache.background.animate opacity: 0, 100, -> f?()
 
   showPais: ->
     @_cache.currentDept.hide()
-    @_cache.background.animate transform: 'T0,0' , 100, =>
-      @_cache[ prop ].show() for prop in ['departamentos', 'shadow', 'labels' ]
+    @_cache.background.animate opacity: 1, 100, =>
+      @_cache.shadow.show()
+      for departamento in @_cache.departamentos
+        departamento.path.show()
+        departamento.label.show()
 
   showDepartamento: (code)->
-    @hidePais => @renderDepartamento code
-
+    # buscar departamento, si no existe regresar
+    departamento = @data.pais.departamentos[code]
+    return unless departamento?
+    @hidePais => @renderDepartamento departamento
 
 # Wrapper, crea el mapa y cuando el archivo `data/data.json` ha sido
 # cargado ejecuta la funcion `fun`

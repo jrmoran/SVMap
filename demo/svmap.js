@@ -7,16 +7,14 @@
       this.div_id = div_id;
       this.data = data;
       this.paper = Raphael(this.div_id, 780, 470);
-      this.paths = [];
       this._cache = {};
       this.renderPais();
     }
 
-    SVMap.prototype.renderDepartamento = function(code) {
-      var attr, departamento, key, municipio, _ref, _ref2, _ref3, _results;
+    SVMap.prototype.renderDepartamento = function(departamento) {
+      var attr, key, municipio, _ref, _ref2, _ref3, _results;
       if (this._cache.currentDept != null) this._cache.currentDept.remove();
       this._cache['currentDept'] = this.paper.set();
-      departamento = this.data.pais.departamentos[code];
       _ref = departamento.municipios;
       for (key in _ref) {
         municipio = _ref[key];
@@ -59,8 +57,7 @@
 
     SVMap.prototype.renderPais = function() {
       var departamento, dept, key, lbl, matrix, _ref, _results;
-      this._cache['labels'] = this.paper.set();
-      this._cache['departamentos'] = this.paper.set();
+      this._cache['departamentos'] = [];
       this._cache['shadow'] = this.paper.path(this.data.pais.shadow).attr({
         fill: '#C9CBDC',
         stroke: 'none'
@@ -82,12 +79,11 @@
           fill: '#7A80BE',
           'font-size': 10
         });
-        this._cache.labels.push(lbl);
-        this._cache.departamentos.push(dept);
-        _results.push(this.paths.push({
-          el: dept,
-          lbl: lbl,
-          key: key
+        dept.code = key;
+        _results.push(this._cache.departamentos.push({
+          path: dept,
+          label: lbl,
+          code: key
         }));
       }
       return _results;
@@ -108,40 +104,34 @@
     };
 
     SVMap.prototype.on = function(event, fun) {
-      var el, key, lbl, path, _i, _len, _ref, _results;
+      var departamento, handler, _i, _len, _ref, _results;
       if (!this.supportsEvent(event)) throw "Evento " + event + " no soportado";
-      _ref = this.paths;
+      _ref = this._cache.departamentos;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        path = _ref[_i];
-        el = path.el, lbl = path.lbl, key = path.key;
-        el[event]((function(fun, key, el) {
+        departamento = _ref[_i];
+        handler = (function(fun, departamento) {
           return function() {
-            return fun(key, el);
+            return fun(departamento, departamento.code);
           };
-        })(fun, key, el));
-        if (lbl) {
-          _results.push(lbl[event]((function(fun, key, el) {
-            return function() {
-              return fun(key, el);
-            };
-          })(fun, key, el)));
-        } else {
-          _results.push(void 0);
-        }
+        })(fun, departamento);
+        departamento.path[event](handler);
+        _results.push(departamento.label[event](handler));
       }
       return _results;
     };
 
     SVMap.prototype.hidePais = function(f) {
-      var prop, _i, _len, _ref;
-      _ref = ['departamentos', 'shadow', 'labels'];
+      var departamento, _i, _len, _ref;
+      this._cache.shadow.hide();
+      _ref = this._cache.departamentos;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        prop = _ref[_i];
-        this._cache[prop].hide();
+        departamento = _ref[_i];
+        departamento.path.hide();
+        departamento.label.hide();
       }
       return this._cache.background.animate({
-        transform: 'T-780,0'
+        opacity: 0
       }, 100, function() {
         return typeof f === "function" ? f() : void 0;
       });
@@ -151,23 +141,28 @@
       var _this = this;
       this._cache.currentDept.hide();
       return this._cache.background.animate({
-        transform: 'T0,0'
+        opacity: 1
       }, 100, function() {
-        var prop, _i, _len, _ref, _results;
-        _ref = ['departamentos', 'shadow', 'labels'];
+        var departamento, _i, _len, _ref, _results;
+        _this._cache.shadow.show();
+        _ref = _this._cache.departamentos;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          prop = _ref[_i];
-          _results.push(_this._cache[prop].show());
+          departamento = _ref[_i];
+          departamento.path.show();
+          _results.push(departamento.label.show());
         }
         return _results;
       });
     };
 
     SVMap.prototype.showDepartamento = function(code) {
-      var _this = this;
+      var departamento,
+        _this = this;
+      departamento = this.data.pais.departamentos[code];
+      if (departamento == null) return;
       return this.hidePais(function() {
-        return _this.renderDepartamento(code);
+        return _this.renderDepartamento(departamento);
       });
     };
 

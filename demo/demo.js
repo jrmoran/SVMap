@@ -12,7 +12,7 @@
     $back.hide().on('click', function() {
       return mapa.showPais();
     });
-    mapa.on('click', function(code, el) {
+    mapa.on('click', function(departamento, code) {
       updateStatus({
         event: 'click',
         code: code
@@ -20,27 +20,21 @@
       mapa.showDepartamento(code);
       return $back.show();
     });
-    mapa.on('dblclick', function(code, el) {
-      return updateStatus({
-        event: 'dblclick',
-        code: code
-      });
-    });
-    mapa.on('mouseover', function(code, el) {
+    mapa.on('mouseover', function(departamento, code) {
       updateStatus({
         event: 'mouseover',
         code: code
       });
-      return el.attr({
+      return departamento.path.attr({
         fill: '#EAECFF'
       });
     });
-    return mapa.on('mouseout', function(code, el) {
+    return mapa.on('mouseout', function(departamento, code) {
       updateStatus({
         event: 'mouseout',
         code: code
       });
-      return el.attr({
+      return departamento.path.attr({
         fill: '#CFD2F1'
       });
     });
