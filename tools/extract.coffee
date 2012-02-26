@@ -5,7 +5,8 @@
 jsdom    = require 'jsdom'
 fs       = require 'fs'
 pais     = fs.readFileSync('./resources/pais.svg').toString()
-depts    = fs.readFileSync('./resources/departamentos.svg').toString()
+#depts    = fs.readFileSync('./resources/departamentos.svg').toString()
+depts    = fs.readFileSync('./resources/departamentos-large-centered.svg').toString()
 out_file = 'demo/svmap-paths.json'
 
 ## helpers
@@ -40,6 +41,17 @@ extractTransform = (node)->
     t = (parseFloat n for n in t.split " " )
 
   t or ''
+
+# takes a path and rounds each point to one decimal place
+zipPath = (path)->
+  tokens = path.match /m|,|\s|\d+\.?[0-9]+/g
+  ret    = []
+  for token in tokens
+    if !isNaN(token) and token isnt ' '
+      token = parseFloat(token).toFixed 4
+    ret.push token
+
+  ret.join ''
 
 extractId = (node)->
   id = node.getAttribute 'id'
@@ -83,6 +95,7 @@ jsdom.env pais, (err, win)->
     # look for groups sharing a key with departamentos
     for key of output.pais.departamentos
       departamento = win.document.getElementById key
+      continue unless departamento?
 
       # iterate over all `path` and `poly` elements inside the departamento
       # group.
