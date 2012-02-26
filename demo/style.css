@@ -49,3 +49,7 @@ h1{
   text-align: center;
   font-size: 11px;
  }
+
+ #mapa{
+   float: left;
+ }
