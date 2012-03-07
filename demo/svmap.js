@@ -136,37 +136,37 @@
     };
 
     SVMap.prototype._attachEventToMunicipio = function(path) {
-      var event, fun, handler, _ref, _results;
+      var attachEvent, event, fun, _ref, _results;
+      attachEvent = function(event, fun) {
+        return path[event](function(e) {
+          return fun(e, path, path.code);
+        });
+      };
       _ref = this._cache.events;
       _results = [];
       for (event in _ref) {
         fun = _ref[event];
-        handler = (function(fun, path) {
-          return function() {
-            return fun(path, path.code);
-          };
-        })(fun, path);
-        _results.push(path[event](handler));
+        _results.push(attachEvent(event, fun));
       }
       return _results;
     };
 
     SVMap.prototype.on = function(element, event, fun) {
-      var departamento, handler, _i, _len, _ref, _results;
+      var attachEventDept, departamento, _i, _len, _ref, _results;
       if (!this.supportsEvent(event)) throw "Evento " + event + " no soportado";
       switch (element) {
         case 'departamento':
+          attachEventDept = function(path, event, departamento) {
+            return path[event](function(e) {
+              return fun(e, departamento, departamento.code);
+            });
+          };
           _ref = this._cache.departamentos;
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             departamento = _ref[_i];
-            handler = (function(fun, departamento) {
-              return function() {
-                return fun(departamento, departamento.code);
-              };
-            })(fun, departamento);
-            departamento.path[event](handler);
-            _results.push(departamento.label[event](handler));
+            attachEventDept(departamento.path, event, departamento);
+            _results.push(attachEventDept(departamento.label, event, departamento));
           }
           return _results;
           break;

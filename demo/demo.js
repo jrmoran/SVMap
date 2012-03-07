@@ -10,7 +10,7 @@
     window.mapa = mapa;
     $back = $('#svmap-back-btn');
     $back.hide();
-    mapa.on('departamento', 'click', function(departamento, code) {
+    mapa.on('departamento', 'click', function(e, departamento, code) {
       updateStatus({
         event: 'click',
         code: code
@@ -20,7 +20,7 @@
         return mapa.showPais();
       });
     });
-    mapa.on('departamento', 'mouseover', function(departamento, code) {
+    mapa.on('departamento', 'mouseover', function(e, departamento, code) {
       updateStatus({
         event: 'mouseover',
         code: code
@@ -29,7 +29,7 @@
         fill: '#EAECFF'
       });
     });
-    mapa.on('departamento', 'mouseout', function(departamento, code) {
+    mapa.on('departamento', 'mouseout', function(e, departamento, code) {
       updateStatus({
         event: 'mouseout',
         code: code
@@ -38,7 +38,7 @@
         fill: '#CFD2F1'
       });
     });
-    mapa.on('municipio', 'mouseover', function(municipio, code) {
+    mapa.on('municipio', 'mouseover', function(e, municipio, code) {
       updateStatus({
         event: 'mouseover',
         code: code
@@ -47,7 +47,7 @@
         fill: '#EAECFF'
       });
     });
-    mapa.on('municipio', 'mouseout', function(municipio, code) {
+    mapa.on('municipio', 'mouseout', function(e, municipio, code) {
       updateStatus({
         event: 'mouseout',
         code: code
@@ -56,7 +56,7 @@
         fill: '#CFD2F1'
       });
     });
-    return mapa.on('municipio', 'click', function(municipio, code) {
+    return mapa.on('municipio', 'click', function(e, municipio, code) {
       var deptCode;
       updateStatus({
         event: 'click',

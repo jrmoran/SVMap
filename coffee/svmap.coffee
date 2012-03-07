@@ -147,22 +147,26 @@ class SVMap
     events[ event ]?
 
   _attachEventToMunicipio: (path)->
+    attachEvent = (event, fun)->
+      path[ event ] (e)->
+        fun e, path, path.code
+
     for event, fun of @_cache.events 
-      handler = do (fun, path)-> (-> fun path, path.code)
-      path[ event ] handler
+      attachEvent event, fun
 
   on: (element, event, fun)->
     throw "Evento #{event} no soportado" unless @supportsEvent event
 
     switch element
       when 'departamento'
+        attachEventDept = (path, event, departamento)->
+          path[ event ] (e)->
+            fun e, departamento, departamento.code
+
         for departamento in @_cache.departamentos
-          # obtengo una function expression que ejecuta `fun` y pasa al departamento
-          # usando una funcion anonima autoejecutable, esto es necesario por
-          # que estamos asignando el handler adentro de un loop.
-          handler = do (fun, departamento) -> (-> fun departamento, departamento.code)
-          departamento.path[ event ]  handler
-          departamento.label[ event ] handler
+          attachEventDept departamento.path, event, departamento
+          attachEventDept departamento.label, event, departamento
+
 
       when 'municipio'
         @_cache.events[ event ] = fun
