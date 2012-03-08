@@ -11,7 +11,9 @@ SVMap id: 'mapa', (mapa)->
   mapa.on 'departamento', 'click', (e, departamento, code)->
     updateStatus event: 'click', code: code
     mapa.showDepartamento code
-    $back.show().on 'click', -> mapa.showPais()
+    $back.show().on 'click', -> 
+      mapa.showPais -> 
+        console.log 'pais shown'
 
   mapa.on 'departamento', 'mouseover', (e, departamento, code)->
     updateStatus event: 'mouseover', code: code
@@ -32,11 +34,11 @@ SVMap id: 'mapa', (mapa)->
   mapa.on 'municipio', 'click', (e, municipio, code)->
     updateStatus event: 'click', code: code
     deptCode = 'd' + code.substring(1, 3)
-    mapa.showMunicipio code
+    mapa.showMunicipio code, -> console.log 'muni shown'
 
     # this is ugly, but for now it's OK
     $back.show().off('click').on 'click', -> 
-      mapa.showDepartamento( deptCode )
+      mapa.showDepartamento deptCode, -> console.log 'dept shown'
       $back.off('click').on 'click', -> mapa.showPais()
 
   # municipios is a set of paths

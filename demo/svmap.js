@@ -219,23 +219,22 @@
       });
     };
 
-    SVMap.prototype.showPais = function() {
+    SVMap.prototype.showPais = function(fun) {
       var _this = this;
       this.hideDepartamento();
       this.hideMunicipio();
       return this._cache.background.animate({
         opacity: 1
       }, 100, function() {
-        var departamento, _i, _len, _ref, _results;
+        var departamento, _i, _len, _ref;
         _this._cache.shadow.show();
         _ref = _this._cache.departamentos;
-        _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           departamento = _ref[_i];
           departamento.path.show();
-          _results.push(departamento.label.show());
+          departamento.label.show();
         }
-        return _results;
+        return typeof fun === "function" ? fun() : void 0;
       });
     };
 
@@ -259,18 +258,19 @@
       return (_ref = this._cache.currentMuni) != null ? _ref.hide() : void 0;
     };
 
-    SVMap.prototype.showDepartamento = function(code) {
+    SVMap.prototype.showDepartamento = function(code, fun) {
       var departamento,
         _this = this;
       departamento = this.data.pais.departamentos[code];
       if (departamento == null) return;
       this.hideMunicipio();
       return this.hidePais(function() {
-        return _this.renderDepartamento(departamento, code);
+        _this.renderDepartamento(departamento, code);
+        return typeof fun === "function" ? fun() : void 0;
       });
     };
 
-    SVMap.prototype.showMunicipio = function(code) {
+    SVMap.prototype.showMunicipio = function(code, fun) {
       var departamento, deptCode, municipio;
       if ((this._cache.currentMuni != null) && this._cache.currentMuni[2].code === code) {
         return;
@@ -282,7 +282,8 @@
         if (municipio == null) return;
         this.hidePais();
         this.hideDepartamento();
-        return this.renderMunicipio(municipio, code);
+        this.renderMunicipio(municipio, code);
+        return typeof fun === "function" ? fun() : void 0;
       }
     };
 

@@ -19,7 +19,9 @@
       });
       mapa.showDepartamento(code);
       return $back.show().on('click', function() {
-        return mapa.showPais();
+        return mapa.showPais(function() {
+          return console.log('pais shown');
+        });
       });
     });
     mapa.on('departamento', 'mouseover', function(e, departamento, code) {
@@ -65,9 +67,13 @@
         code: code
       });
       deptCode = 'd' + code.substring(1, 3);
-      mapa.showMunicipio(code);
+      mapa.showMunicipio(code, function() {
+        return console.log('muni shown');
+      });
       return $back.show().off('click').on('click', function() {
-        mapa.showDepartamento(deptCode);
+        mapa.showDepartamento(deptCode, function() {
+          return console.log('dept shown');
+        });
         return $back.off('click').on('click', function() {
           return mapa.showPais();
         });

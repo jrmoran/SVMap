@@ -213,7 +213,7 @@ class SVMap
       departamento.label.hide()
     @_cache.background.animate opacity: 0, 100, -> f?()
 
-  showPais: ->
+  showPais: (fun)->
     @hideDepartamento()
     @hideMunicipio()
     @_cache.background.animate opacity: 1, 100, =>
@@ -221,6 +221,8 @@ class SVMap
       for departamento in @_cache.departamentos
         departamento.path.show()
         departamento.label.show()
+
+      fun?()
 
   # hides current departamento
   hideDepartamento: ->
@@ -232,14 +234,16 @@ class SVMap
   hideMunicipio: ->
     @_cache.currentMuni?.hide()
 
-  showDepartamento: (code)->
+  showDepartamento: (code, fun)->
     # buscar departamento, si no existe regresar
     departamento = @data.pais.departamentos[code]
     return unless departamento?
     @hideMunicipio()
-    @hidePais => @renderDepartamento departamento, code
+    @hidePais =>
+      @renderDepartamento departamento, code
+      fun?()
 
-  showMunicipio: (code)->
+  showMunicipio: (code, fun)->
     # saltar si el municipio a mostrar y esta siendo mostrado
     if @_cache.currentMuni? and @_cache.currentMuni[2].code is code
       return
@@ -252,6 +256,7 @@ class SVMap
       @hidePais()
       @hideDepartamento()
       @renderMunicipio municipio, code
+      fun?()
 
   # iterator sobre cada municipio en el actual departamento
   eachMunicipio: (fun)->
