@@ -39,7 +39,14 @@ SVMap id: 'mapa', (mapa)->
       mapa.showDepartamento( deptCode )
       $back.off('click').on 'click', -> mapa.showPais()
 
+  # municipios is a set of paths
+  mapa.on 'departamento', 'rendered', (municipios, deptCode)->
+    console.log 'departamento rendered', deptCode
+    # I can iterate over all municipios here, or use the eachMunicipio
+    # method - the latter is useful when operating outside an event
+    # handler
+    mapa.eachMunicipio (el)-> console.log el.code
 
-
-
+  mapa.on 'municipio', 'rendered', (municipio, code)->
+    console.log 'municipio rendered', municipio, code
 

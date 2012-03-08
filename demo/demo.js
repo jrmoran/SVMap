@@ -58,7 +58,7 @@
         fill: mapa.opts.pathColor
       });
     });
-    return mapa.on('municipio', 'click', function(e, municipio, code) {
+    mapa.on('municipio', 'click', function(e, municipio, code) {
       var deptCode;
       updateStatus({
         event: 'click',
@@ -72,6 +72,15 @@
           return mapa.showPais();
         });
       });
+    });
+    mapa.on('departamento', 'rendered', function(municipios, deptCode) {
+      console.log('departamento rendered', deptCode);
+      return mapa.eachMunicipio(function(el) {
+        return console.log(el.code);
+      });
+    });
+    return mapa.on('municipio', 'rendered', function(municipio, code) {
+      return console.log('municipio rendered', municipio, code);
     });
   });
 

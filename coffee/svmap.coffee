@@ -10,8 +10,9 @@ class SVMap
   constructor: (opts, @data)->
     @_setOptions( opts )
     @paper  = Raphael @opts.id, 780, 470
-    @_cache = {}
-    @_cache[ 'events' ] = {}
+    @_cache =
+      events: {}
+      muniEvents: {}
 
     @renderPais()
 
@@ -44,10 +45,14 @@ class SVMap
 
 
   # dibuja un departamento
-  renderDepartamento: (departamento)->
+  renderDepartamento: (departamento, deptCode)->
+    if @_cache.currentDept?
+      prop.remove() for key, prop of @_cache.currentDept
 
-    @_cache.currentDept.remove() if @_cache.currentDept?
-    @_cache[ 'currentDept' ] = @paper.set()
+    @_cache[ 'currentDept' ] =
+      shadows:     @paper.set()
+      backgrounds: @paper.set()
+      paths:       @paper.set()
 
     [x, y] = [-140, -370]
 
@@ -59,13 +64,15 @@ class SVMap
                      .attr( @_shadowOpts )
                      .translate x + 5, y + 5
 
-      @_cache.currentDept.push shadow
+      @_cache.currentDept.shadows.push shadow
 
     # background
     for code, municipio of departamento.municipios
-      @_cache.currentDept.push @paper.path(municipio.path)
-                                     .attr( @_backgroundOpts )
-                                     .translate x + 2, y + 2
+      background = @paper.path(municipio.path)
+                         .attr( @_backgroundOpts )
+                         .translate x + 2, y + 2
+
+      @_cache.currentDept.backgrounds.push background
 
     # path
     for code, municipio of departamento.municipios
@@ -78,7 +85,9 @@ class SVMap
       path.code = code
 
       @_attachEventToMunicipio path
-      @_cache.currentDept.push path
+      @_cache.currentDept.paths.push path
+
+    @_cache.events['departamento rendered']?(@_cache.currentDept.paths, deptCode)
 
 
   renderMunicipio: (municipio, code)->
@@ -124,9 +133,11 @@ class SVMap
                  .attr( @_pathOpts )
                  .animate( opacity: 1 , 90 )
 
-    @_attachEventToMunicipio path
     path.code = code
     @_cache.currentMuni.push path
+    @_attachEventToMunicipio path
+
+    @_cache.events['municipio rendered']?( path, code )
 
   renderPais: ->
 
@@ -171,10 +182,14 @@ class SVMap
       path[ event ] (e)->
         fun e, path, path.code
 
-    for event, fun of @_cache.events 
+    for event, fun of @_cache.muniEvents 
       attachEvent event, fun
 
   on: (element, event, fun)->
+    if event is 'rendered'
+      @_cache.events[ "#{element} #{event}" ] = fun
+      return
+
     throw "Evento #{event} no soportado" unless @supportsEvent event
 
     switch element
@@ -189,7 +204,7 @@ class SVMap
 
 
       when 'municipio'
-        @_cache.events[ event ] = fun
+        @_cache.muniEvents[ event ] = fun
 
   hidePais: (f)->
     @_cache.shadow.hide()
@@ -209,7 +224,9 @@ class SVMap
 
   # hides current departamento
   hideDepartamento: ->
-    @_cache.currentDept?.hide()
+    if @_cache.currentDept?
+      if @_cache.currentDept?
+        prop.hide() for key, prop of @_cache.currentDept
 
   # hides current municipio
   hideMunicipio: ->
@@ -220,7 +237,7 @@ class SVMap
     departamento = @data.pais.departamentos[code]
     return unless departamento?
     @hideMunicipio()
-    @hidePais => @renderDepartamento departamento
+    @hidePais => @renderDepartamento departamento, code
 
   showMunicipio: (code)->
     # saltar si el municipio a mostrar y esta siendo mostrado
@@ -235,6 +252,12 @@ class SVMap
       @hidePais()
       @hideDepartamento()
       @renderMunicipio municipio, code
+
+  # iterator sobre cada municipio en el actual departamento
+  eachMunicipio: (fun)->
+    if @_cache.currentDept?
+      @_cache.currentDept.paths.forEach fun
+
 
 # Wrapper, crea el mapa y cuando el archivo `data/data.json` ha sido
 # cargado ejecuta la funcion `fun`
