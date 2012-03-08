@@ -2,7 +2,7 @@ updateStatus = (o)->
   $('#status').html "<em>event: </em> #{o.event}</br>
                      <em>code: \b</em> #{o.code}"
 
-SVMap 'mapa', (mapa)->
+SVMap id: 'mapa', (mapa)->
   window.mapa = mapa    # exposing the map to the global scope
 
   $back = $('#svmap-back-btn') 
@@ -19,7 +19,7 @@ SVMap 'mapa', (mapa)->
 
   mapa.on 'departamento', 'mouseout',  (e, departamento, code)->
     updateStatus event: 'mouseout', code: code
-    departamento.path.attr fill  : '#CFD2F1'
+    departamento.path.attr fill  : mapa.opts.pathColor
 
   mapa.on 'municipio', 'mouseover', (e, municipio, code)->
     updateStatus event: 'mouseover', code: code
@@ -27,7 +27,7 @@ SVMap 'mapa', (mapa)->
 
   mapa.on 'municipio', 'mouseout', (e, municipio, code)->
     updateStatus event: 'mouseout', code: code
-    municipio.attr fill  : '#CFD2F1'
+    municipio.attr fill: mapa.opts.pathColor
 
   mapa.on 'municipio', 'click', (e, municipio, code)->
     updateStatus event: 'click', code: code

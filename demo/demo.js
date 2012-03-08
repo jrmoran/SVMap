@@ -5,7 +5,9 @@
     return $('#status').html("<em>event: </em> " + o.event + "</br>                     <em>code: \b</em> " + o.code);
   };
 
-  SVMap('mapa', function(mapa) {
+  SVMap({
+    id: 'mapa'
+  }, function(mapa) {
     var $back;
     window.mapa = mapa;
     $back = $('#svmap-back-btn');
@@ -35,7 +37,7 @@
         code: code
       });
       return departamento.path.attr({
-        fill: '#CFD2F1'
+        fill: mapa.opts.pathColor
       });
     });
     mapa.on('municipio', 'mouseover', function(e, municipio, code) {
@@ -53,7 +55,7 @@
         code: code
       });
       return municipio.attr({
-        fill: '#CFD2F1'
+        fill: mapa.opts.pathColor
       });
     });
     return mapa.on('municipio', 'click', function(e, municipio, code) {

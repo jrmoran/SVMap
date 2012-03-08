@@ -1,3 +1,5 @@
+Util =
+  extend    : (target, source)-> target[k] = v for k, v of source
 ## SVMap
 
 #
@@ -5,11 +7,41 @@
 # * `data`: object literal exportado desde archivos SVG y cargado como JSON
 #
 class SVMap
-  constructor: (@div_id, @data)->
-    @paper  = Raphael @div_id, 780, 470
+  constructor: (opts, @data)->
+    @_setOptions( opts )
+    @paper  = Raphael @opts.id, 780, 470
     @_cache = {}
     @_cache[ 'events' ] = {}
+
     @renderPais()
+
+  _setOptions: (opts = {})->
+    @opts   =
+      id:              'map'
+      backgroundColor: '#8C8FAB'
+      pathColor:       '#CFD2F1'
+      strokeColor:     '#8489BF'
+      shadowColor:     '#C9CBDC'
+      textColor:       '#7A80BE'
+      textSize:         10
+
+    # grab settings from user
+    Util.extend @opts, opts
+
+    @_shadowOpts =
+      fill:   @opts.shadowColor
+      stroke: 'none' 
+
+    @_backgroundOpts = 
+      fill: @opts.backgroundColor
+      stroke: 'none' 
+
+    @_pathOpts = 
+      opacity: 0
+      stroke: @opts.strokeColor
+      fill:   @opts.pathColor
+
+
 
   # dibuja un departamento
   renderDepartamento: (departamento)->
@@ -24,7 +56,7 @@ class SVMap
     # shadow
     for code, municipio of departamento.municipios
       shadow = @paper.path(municipio.path)
-                     .attr( fill: '#C9CBDC', stroke: 'none' )
+                     .attr( @_shadowOpts )
                      .translate x + 5, y + 5
 
       @_cache.currentDept.push shadow
@@ -32,7 +64,7 @@ class SVMap
     # background
     for code, municipio of departamento.municipios
       @_cache.currentDept.push @paper.path(municipio.path)
-                                     .attr( fill:  '#8C8FAB', stroke: 'none' )
+                                     .attr( @_backgroundOpts )
                                      .translate x + 2, y + 2
 
     # path
@@ -40,7 +72,7 @@ class SVMap
 
       path = @paper.path(municipio.path)
                    .translate(x, y)
-                   .attr(opacity: 0, stroke: '#8489BF', fill: '#CFD2F1' )
+                   .attr( @_pathOpts )
                    .animate( opacity: 1 , 90 )
 
       path.code = code
@@ -57,7 +89,7 @@ class SVMap
     [left, top] = [100, 150]
 
     shadow = @paper.path( municipio.path )
-                   .attr( fill: '#C9CBDC', stroke: 'none' )
+                   .attr( @_shadowOpts )
 
     {x, y, width, height} = shadow.getBBox()
 
@@ -80,7 +112,7 @@ class SVMap
 
     # background
     background = @paper.path( municipio.path )
-                       .attr( fill:  '#8C8FAB', stroke: 'none' )
+                       .attr( @_backgroundOpts )
                        .translate( adjX + 2, adjY + 2)
                        .scale ratio
 
@@ -89,10 +121,7 @@ class SVMap
     path = @paper.path( municipio.path )
                  .translate( adjX, adjY )
                  .scale( ratio )
-                 .attr({
-                   stroke: '#8489BF',
-                   fill: '#CFD2F1',
-                   opacity: 0 })
+                 .attr( @_pathOpts )
                  .animate( opacity: 1 , 90 )
 
     @_attachEventToMunicipio path
@@ -112,23 +141,20 @@ class SVMap
 
     # dibujar background
     @_cache[ 'background' ] = @paper.path(@data.pais.background)
-                                .attr
-                                  fill  : '#8C8FAB'
-                                  stroke: 'none'
+                                .attr @_backgroundOpts
 
     # dibujar departamentos
     for code, departamento of @data.pais.departamentos
       # Paths
-      dept = @paper.path(departamento.path)
-                   .attr
-                     fill  : '#CFD2F1'
-                     stroke: '#8489BF'
+      dept = @paper.path( departamento.path )
+                   .attr( @_pathOpts )
+                   .animate( opacity: 1, 90 )
 
       # Labels
       matrix = Raphael.matrix.apply null, departamento.lblTransform
       lbl    = @paper.text( 0, 0, departamento.lbl)
                      .transform( matrix.toTransformString() )
-                     .attr( fill: '#7A80BE', 'font-size': 10)
+                     .attr( fill: @opts.textColor, 'font-size': @opts.textSize)
 
       dept.code = code
       @_cache.departamentos.push path: dept, label: lbl, code: code
@@ -212,7 +238,7 @@ class SVMap
 
 # Wrapper, crea el mapa y cuando el archivo `data/data.json` ha sido
 # cargado ejecuta la funcion `fun`
-window.SVMap = (div_id, fun)->
+window.SVMap = (opts = {},  fun)->
   $.getJSON 'svmap-paths.json', (data)->
-    mapa = new SVMap div_id, data
+    mapa = new SVMap opts, data
     fun mapa

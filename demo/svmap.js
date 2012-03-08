@@ -1,16 +1,55 @@
 (function() {
-  var SVMap;
+  var SVMap, Util;
+
+  Util = {
+    extend: function(target, source) {
+      var k, v, _results;
+      _results = [];
+      for (k in source) {
+        v = source[k];
+        _results.push(target[k] = v);
+      }
+      return _results;
+    }
+  };
 
   SVMap = (function() {
 
-    function SVMap(div_id, data) {
-      this.div_id = div_id;
+    function SVMap(opts, data) {
       this.data = data;
-      this.paper = Raphael(this.div_id, 780, 470);
+      this._setOptions(opts);
+      this.paper = Raphael(this.opts.id, 780, 470);
       this._cache = {};
       this._cache['events'] = {};
       this.renderPais();
     }
+
+    SVMap.prototype._setOptions = function(opts) {
+      if (opts == null) opts = {};
+      this.opts = {
+        id: 'map',
+        backgroundColor: '#8C8FAB',
+        pathColor: '#CFD2F1',
+        strokeColor: '#8489BF',
+        shadowColor: '#C9CBDC',
+        textColor: '#7A80BE',
+        textSize: 10
+      };
+      Util.extend(this.opts, opts);
+      this._shadowOpts = {
+        fill: this.opts.shadowColor,
+        stroke: 'none'
+      };
+      this._backgroundOpts = {
+        fill: this.opts.backgroundColor,
+        stroke: 'none'
+      };
+      return this._pathOpts = {
+        opacity: 0,
+        stroke: this.opts.strokeColor,
+        fill: this.opts.pathColor
+      };
+    };
 
     SVMap.prototype.renderDepartamento = function(departamento) {
       var code, municipio, path, shadow, x, y, _ref, _ref2, _ref3, _ref4, _results;
@@ -20,29 +59,19 @@
       _ref2 = departamento.municipios;
       for (code in _ref2) {
         municipio = _ref2[code];
-        shadow = this.paper.path(municipio.path).attr({
-          fill: '#C9CBDC',
-          stroke: 'none'
-        }).translate(x + 5, y + 5);
+        shadow = this.paper.path(municipio.path).attr(this._shadowOpts).translate(x + 5, y + 5);
         this._cache.currentDept.push(shadow);
       }
       _ref3 = departamento.municipios;
       for (code in _ref3) {
         municipio = _ref3[code];
-        this._cache.currentDept.push(this.paper.path(municipio.path).attr({
-          fill: '#8C8FAB',
-          stroke: 'none'
-        }).translate(x + 2, y + 2));
+        this._cache.currentDept.push(this.paper.path(municipio.path).attr(this._backgroundOpts).translate(x + 2, y + 2));
       }
       _ref4 = departamento.municipios;
       _results = [];
       for (code in _ref4) {
         municipio = _ref4[code];
-        path = this.paper.path(municipio.path).translate(x, y).attr({
-          opacity: 0,
-          stroke: '#8489BF',
-          fill: '#CFD2F1'
-        }).animate({
+        path = this.paper.path(municipio.path).translate(x, y).attr(this._pathOpts).animate({
           opacity: 1
         }, 90);
         path.code = code;
@@ -57,25 +86,15 @@
       if (this._cache.currentMuni != null) this._cache.currentMuni.remove();
       this._cache['currentMuni'] = this.paper.set();
       _ref = [100, 150], left = _ref[0], top = _ref[1];
-      shadow = this.paper.path(municipio.path).attr({
-        fill: '#C9CBDC',
-        stroke: 'none'
-      });
+      shadow = this.paper.path(municipio.path).attr(this._shadowOpts);
       _ref2 = shadow.getBBox(), x = _ref2.x, y = _ref2.y, width = _ref2.width, height = _ref2.height;
       ratio = width < 50 && height < 50 ? 5 : width < 100 && height < 100 ? 3 : width < 200 && height < 200 ? 2 : 1;
       _ref3 = [x * -1 + left, y * -1 + top], adjX = _ref3[0], adjY = _ref3[1];
       shadow.translate(adjX + 5, adjY + 5).scale(ratio);
       this._cache.currentMuni.push(shadow);
-      background = this.paper.path(municipio.path).attr({
-        fill: '#8C8FAB',
-        stroke: 'none'
-      }).translate(adjX + 2, adjY + 2).scale(ratio);
+      background = this.paper.path(municipio.path).attr(this._backgroundOpts).translate(adjX + 2, adjY + 2).scale(ratio);
       this._cache.currentMuni.push(background);
-      path = this.paper.path(municipio.path).translate(adjX, adjY).scale(ratio).attr({
-        stroke: '#8489BF',
-        fill: '#CFD2F1',
-        opacity: 0
-      }).animate({
+      path = this.paper.path(municipio.path).translate(adjX, adjY).scale(ratio).attr(this._pathOpts).animate({
         opacity: 1
       }, 90);
       this._attachEventToMunicipio(path);
@@ -90,22 +109,18 @@
         fill: '#C9CBDC',
         stroke: 'none'
       });
-      this._cache['background'] = this.paper.path(this.data.pais.background).attr({
-        fill: '#8C8FAB',
-        stroke: 'none'
-      });
+      this._cache['background'] = this.paper.path(this.data.pais.background).attr(this._backgroundOpts);
       _ref = this.data.pais.departamentos;
       _results = [];
       for (code in _ref) {
         departamento = _ref[code];
-        dept = this.paper.path(departamento.path).attr({
-          fill: '#CFD2F1',
-          stroke: '#8489BF'
-        });
+        dept = this.paper.path(departamento.path).attr(this._pathOpts).animate({
+          opacity: 1
+        }, 90);
         matrix = Raphael.matrix.apply(null, departamento.lblTransform);
         lbl = this.paper.text(0, 0, departamento.lbl).transform(matrix.toTransformString()).attr({
-          fill: '#7A80BE',
-          'font-size': 10
+          fill: this.opts.textColor,
+          'font-size': this.opts.textSize
         });
         dept.code = code;
         _results.push(this._cache.departamentos.push({
@@ -248,10 +263,11 @@
 
   })();
 
-  window.SVMap = function(div_id, fun) {
+  window.SVMap = function(opts, fun) {
+    if (opts == null) opts = {};
     return $.getJSON('svmap-paths.json', function(data) {
       var mapa;
-      mapa = new SVMap(div_id, data);
+      mapa = new SVMap(opts, data);
       return fun(mapa);
     });
   };
