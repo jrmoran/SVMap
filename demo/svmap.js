@@ -13,7 +13,7 @@
     }
 
     SVMap.prototype.renderDepartamento = function(departamento) {
-      var attr, code, municipio, path, shadow, x, y, _ref, _ref2, _ref3, _ref4, _results;
+      var code, municipio, path, shadow, x, y, _ref, _ref2, _ref3, _ref4, _results;
       if (this._cache.currentDept != null) this._cache.currentDept.remove();
       this._cache['currentDept'] = this.paper.set();
       _ref = [-140, -370], x = _ref[0], y = _ref[1];
@@ -39,18 +39,14 @@
       for (code in _ref4) {
         municipio = _ref4[code];
         path = this.paper.path(municipio.path).translate(x, y).attr({
-          opacity: 0
+          opacity: 0,
+          stroke: '#8489BF',
+          fill: '#CFD2F1'
         }).animate({
           opacity: 1
         }, 90);
-        attr = code.match(/lago/) ? {
-          fill: '#58A9F4',
-          stroke: '#3684CC'
-        } : (this._attachEventToMunicipio(path), {
-          stroke: '#8489BF',
-          fill: '#CFD2F1'
-        });
-        path.attr(attr).code = code;
+        path.code = code;
+        this._attachEventToMunicipio(path);
         _results.push(this._cache.currentDept.push(path));
       }
       return _results;

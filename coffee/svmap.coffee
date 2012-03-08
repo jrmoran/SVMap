@@ -40,18 +40,12 @@ class SVMap
 
       path = @paper.path(municipio.path)
                    .translate(x, y)
-                   .attr(opacity: 0)
+                   .attr(opacity: 0, stroke: '#8489BF', fill: '#CFD2F1' )
                    .animate( opacity: 1 , 90 )
 
-      attr = if code.match /lago/
-        { fill  : '#58A9F4', stroke: '#3684CC' }
-      else
-        @_attachEventToMunicipio path
-        { stroke: '#8489BF', fill  : '#CFD2F1' }
+      path.code = code
 
-      path.attr(attr)
-          .code = code
-
+      @_attachEventToMunicipio path
       @_cache.currentDept.push path
 
 
