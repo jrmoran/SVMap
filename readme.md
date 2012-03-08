@@ -15,17 +15,36 @@ tienes instalado el interprete de python, solo haz lo siguiente
 Luego abrir `http://localhost:8000/`
 
 ## Uso
-Ver el archivo `demo/demo.js` o `coffee/demo.coffee`
 
-## Mapas
-Los archivos *ai* pueden ser editados en Adobe Illustrator. Estos son
-exportados a formato *svg* siguiendo estos settings:
+    SVMap({ id: 'mapa' }, function(mapa) {
 
-* SVG Profile: 1.1
-* Type: SVG
-* CSS Properties: Style Elements
-* Decimal Places: 1
-* Encoding: UTF-8
+      mapa.on('departamento', 'click', function(e, departamento, code) {
+        mapa.showDepartamento(code);
+      });
+
+      mapa.on('departamento', 'mouseover', function(e, departamento, code) {
+        departamento.path.attr({
+          fill: '#EAECFF'
+        });
+      });
+
+      mapa.on('departamento', 'mouseout', function(e, departamento, code) {
+        departamento.path.attr({
+          fill: mapa.opts.pathColor
+        });
+    });
+
+Ver el archivo `demo/demo.js` o `coffee/demo.coffee` para mas detalles.
+
+### Opciones por defecto
+
+* **id**:              'map'
+* **backgroundColor**: '#8C8FAB'
+* **pathColor**:       '#CFD2F1'
+* **strokeColor**:     '#8489BF'
+* **shadowColor**:     '#C9CBDC'
+* **textColor**:       '#7A80BE'
+* **textSize**:         10
 
 ## Tools
 
