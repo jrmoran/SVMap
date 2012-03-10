@@ -1,5 +1,7 @@
 # SVMap
 
+![screenshot](http://i.imgur.com/nX6cnl.png)
+
 ## Dependecias
 
 * jQuery 1.6.1+
