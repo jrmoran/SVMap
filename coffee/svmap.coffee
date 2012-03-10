@@ -245,8 +245,8 @@ class SVMap
 
   showMunicipio: (code, fun)->
     # saltar si el municipio a mostrar y esta siendo mostrado
-    if @_cache.currentMuni? and @_cache.currentMuni[2].code is code
-      return
+    #if @_cache.currentMuni? and @_cache.currentMuni[2].code is code
+      #return
 
     deptCode = 'd' + code.substring(1,3)
     departamento = @data.pais.departamentos[ deptCode ]

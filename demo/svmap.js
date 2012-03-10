@@ -272,9 +272,6 @@
 
     SVMap.prototype.showMunicipio = function(code, fun) {
       var departamento, deptCode, municipio;
-      if ((this._cache.currentMuni != null) && this._cache.currentMuni[2].code === code) {
-        return;
-      }
       deptCode = 'd' + code.substring(1, 3);
       departamento = this.data.pais.departamentos[deptCode];
       if (departamento != null) {
