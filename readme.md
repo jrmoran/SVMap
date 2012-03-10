@@ -48,6 +48,33 @@ Ver el archivo `demo/demo.js` o `coffee/demo.coffee` para mas detalles.
 * **textColor**:       '#7A80BE'
 * **textSize**:         10
 
+### Metodos
+
+* `showPais(<function>callback)`
+* `showDepartamento(<string>code, <function>callback)`
+* `showMunicipio(<string>code, <function>callback)`
+
+#### Ejemplos
+
+Dibujar San Salvador y mostrar un mensaje de alerta
+
+    mapa.showDepartamento('d06', function(){ alert('San Salvador')});
+
+Callbacks son opcionales
+
+    mapa.showMunicipio('m0618');     // Dibuja Soyapango
+
+### Eventos
+
+* rendered
+* click
+* dblclick
+* mouseover
+* mouseout
+* mousemove
+* mousedown
+* mouseout
+
 ## Tools
 
 Ejecuta el comando `cake` para listar tareas disponibles.
