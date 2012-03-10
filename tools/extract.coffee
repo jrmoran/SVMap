@@ -2,11 +2,14 @@
 # and muncipalities' paths and labels
 #
 
+#in_file_depts = './resources/departamentos.svg'
+#in_file_depts = './resources/departamentos-large-centered.svg'
+in_file_depts = './resources/departamentos-large-centered-no-dispersed.svg'
+
 jsdom    = require 'jsdom'
 fs       = require 'fs'
 pais     = fs.readFileSync('./resources/pais.svg').toString()
-#depts    = fs.readFileSync('./resources/departamentos.svg').toString()
-depts    = fs.readFileSync('./resources/departamentos-large-centered.svg').toString()
+depts    = fs.readFileSync( in_file_depts ).toString()
 out_file = 'demo/svmap-paths.json'
 
 ## helpers
@@ -54,7 +57,7 @@ zipPath = (path)->
   ret.join ''
 
 extractId = (node)->
-  id = node.getAttribute 'id'
+  id = node.getAttribute('id').substring 0, 5
   if id is '' then nextId() else id
 
 # stores an object literal as a *JSON* file in the out_file
