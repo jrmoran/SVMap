@@ -146,9 +146,7 @@ class SVMap
 
     # dibujar sombra
     @_cache[ 'shadow' ] = @paper.path(@data.pais.shadow)
-                            .attr
-                              fill  : '#C9CBDC'
-                              stroke: 'none'
+                            .attr @_shadowOpts
 
     # dibujar background
     @_cache[ 'background' ] = @paper.path(@data.pais.background)

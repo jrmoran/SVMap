@@ -118,10 +118,7 @@
     SVMap.prototype.renderPais = function() {
       var code, departamento, dept, lbl, matrix, _ref, _results;
       this._cache['departamentos'] = [];
-      this._cache['shadow'] = this.paper.path(this.data.pais.shadow).attr({
-        fill: '#C9CBDC',
-        stroke: 'none'
-      });
+      this._cache['shadow'] = this.paper.path(this.data.pais.shadow).attr(this._shadowOpts);
       this._cache['background'] = this.paper.path(this.data.pais.background).attr(this._backgroundOpts);
       _ref = this.data.pais.departamentos;
       _results = [];

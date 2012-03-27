@@ -1,13 +1,17 @@
 (function() {
-  var updateStatus;
+  var hoverColor, settings, updateStatus;
 
   updateStatus = function(o) {
     return $('#status').html("<em>event: </em> " + o.event + "</br>                     <em>code: \b</em> " + o.code);
   };
 
-  SVMap({
+  settings = {
     id: 'mapa'
-  }, function(mapa) {
+  };
+
+  hoverColor = '#EAECFF';
+
+  SVMap(settings, function(mapa) {
     var $back;
     window.mapa = mapa;
     $back = $('#svmap-back-btn');
@@ -30,7 +34,7 @@
         code: code
       });
       return departamento.path.attr({
-        fill: '#EAECFF'
+        fill: hoverColor
       });
     });
     mapa.on('departamento', 'mouseout', function(e, departamento, code) {
@@ -48,7 +52,7 @@
         code: code
       });
       return municipio.attr({
-        fill: '#EAECFF'
+        fill: hoverColor
       });
     });
     mapa.on('municipio', 'mouseout', function(e, municipio, code) {

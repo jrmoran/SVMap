@@ -2,7 +2,19 @@ updateStatus = (o)->
   $('#status').html "<em>event: </em> #{o.event}</br>
                      <em>code: \b</em> #{o.code}"
 
-SVMap id: 'mapa', (mapa)->
+settings =
+  id: 'mapa'
+  # pathColor:       '#ffffff'
+  # strokeColor:     '#70592B'
+  # backgroundColor: '#B7B7B7'
+  # shadowColor:     '#eae9e7'
+  # textColor:       '#8F6B6E'
+  # textSize:         10
+
+# hoverColor = '#F2ECEC'
+hoverColor = '#EAECFF'
+
+SVMap settings, (mapa)->
   window.mapa = mapa    # exposing the map to the global scope
 
   $back = $('#svmap-back-btn') 
@@ -17,7 +29,7 @@ SVMap id: 'mapa', (mapa)->
 
   mapa.on 'departamento', 'mouseover', (e, departamento, code)->
     updateStatus event: 'mouseover', code: code
-    departamento.path.attr fill: '#EAECFF'
+    departamento.path.attr fill: hoverColor
 
   mapa.on 'departamento', 'mouseout',  (e, departamento, code)->
     updateStatus event: 'mouseout', code: code
@@ -25,7 +37,7 @@ SVMap id: 'mapa', (mapa)->
 
   mapa.on 'municipio', 'mouseover', (e, municipio, code)->
     updateStatus event: 'mouseover', code: code
-    municipio.attr fill: '#EAECFF'
+    municipio.attr fill: hoverColor
 
   mapa.on 'municipio', 'mouseout', (e, municipio, code)->
     updateStatus event: 'mouseout', code: code
